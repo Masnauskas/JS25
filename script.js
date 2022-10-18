@@ -3,6 +3,40 @@ const BASE_URL = "https://golden-whispering-show.glitch.me";
 let dataArray = [];
 let dataArray2 = [];
 
+// async function getUpdates(url) {
+//   let json;
+//   try {
+//     const res = await fetch(url);
+//     json = await res.json();
+//   } catch (err) {
+//     console.error(err);
+//   }
+//   drawItems(json);
+//   setTimeout(getUpdates, 5000);
+// }
+// getUpdates(BASE_URL);
+
+// function pollData(){
+//   fetch(BASE_URL)
+
+// }
+
+async function getUpdatesFromUrl(url) {
+  let response = await fetch(url);
+
+  if (response.status == 500) {
+    await getUpdatesFromUrl(url);
+  } else if (response.status != 200) {
+    console.log("Error: " + response.status);
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+    await getUpdatesFromUrl(url);
+  } else {
+    let updatedData = await response.json();
+    drawItems(updatedData);
+    await getUpdatesFromUrl(url);
+  }
+}
+getUpdatesFromUrl(BASE_URL);
 async function getItemsData(url) {
   try {
     const response = await fetch(url);
